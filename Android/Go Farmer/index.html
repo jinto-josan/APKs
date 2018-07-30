@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="/s.js"></script>
+  <style>
+    td, th{
+      padding: 5px;
+      border: 1px solid #CCC;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">
+        GO FARMER
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="col-s-12">
+  <form>
+    <div class="form-group">
+      <!--<label for="lang">Select Language (select one):</label>-->
+      <div id="google_translate_element"></div>
+      <br>
+    </div>
+
+      <div class="loading" align="center">
+              Loading ...
+      </div>
+    <div class="form-group">
+      <label for="weeds">Select Weeds </label>
+      <select class="form-control" id="weeds">
+      </select>
+      <br>
+    </div>
+    <div class="table-responsive">
+
+    <table id="tbl"  class="table-striped">
+    </table>
+    </div>
+  </form>
+  </div>
+</div>
+
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'ar,bn,en,gu,hi,kn,ml,mr,ne,pa,ta,te', layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL}, 'google_translate_element');
+}
+</script><script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script>
+  $(document).ready(function(){
+      $("#weeds").hide();
+
+      $.ajax({
+        url: "data/sheet.csv",
+        async: false,
+        success: function (csvd) {
+            data = $.csv.toArrays(csvd);
+        },
+        dataType: "text",
+        complete: function () {
+//          console.log(data);
+            for ( var i =1; i < data.length; i++){
+                $("#weeds").append("<option value='"+i+"'>"+ data[i][0]+"</option>");
+                var r = "";
+                for (var j in data[i]){
+                    r += "<tr class='trr r"+i+"'><th>"+ data[0][j] +"</th><td>"+ data[i][j] +"</td></tr>";
+                }
+                r+= "</tr>";
+
+                $("#tbl").append( r );
+            }
+
+            $("#weeds").show();
+            $(".trr").hide();
+            $(".loading").hide();
+        }
+    });
+
+      $("#weeds").change(function(){
+          var x = $(this).val();
+          $(".trr").hide();
+          $(".r"+x).show();
+      });
+  });
+</script>
+</body>
+</html>
